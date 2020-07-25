@@ -4,7 +4,6 @@ import { Component, OnInit } from '@angular/core';
 
 import { PokemonFavoriteSalvarService } from './../../services/pokemon/pokemon-favorite-salvar.service';
 import { PokemonGetAllService } from './../../services/pokemon/pokemon-get-all.service';
-import { IPokemon } from 'src/app/entities/pokemon/pokemon.interface';
 import { Pokemon } from 'src/app/entities/pokemon/pokemon';
 
 @Component({
@@ -38,38 +37,50 @@ export class PokemonListComponent implements OnInit {
 
   loadPokemon(): void {
     this.pokemonGetAllService.get().subscribe(res => {
-      this.map(res);
+      this.assignValues(res);
     });
   }
 
-  map(pokemon: any[]): void {
+  assignValues(pokemon: Pokemon[]): void {
     this.pokemonList = pokemon;
   }
 
-  favorite(pokemon: any): void {
-    if (pokemon.isFavorite) {
-      this.pokemonFavoriteService.remove(pokemon.id);
-    } else {
-      this.pokemonFavoriteService.set(pokemon.id);
-    }
-    pokemon.isFavorite = !pokemon.isFavorite;
-  }
-
   next(): void {
-    this.pokemonGetAllService.next().subscribe(res => this.map(res));
+    this.pokemonGetAllService.next().subscribe(res => this.assignValues(res));
   }
 
   previous(): void {
-    this.pokemonGetAllService.previous().subscribe(res => this.map(res));
+    this.pokemonGetAllService.previous().subscribe(res => this.assignValues(res));
   }
 
-  mouseEnter(pokemon: any): void {
+  reset(): void {
+    this.onlyFavoritesShowing = false;
+    this.pokemonGetAllService.reset().subscribe(res => this.assignValues(res));
+  }
+
+  favorite(pokemon: Pokemon, index: number): void {
+    if (pokemon.isFavorite) {
+      this.pokemonFavoriteService.remove(pokemon.id);
+    } else {
+      this.pokemonFavoriteService.include(pokemon.id);
+    }
+    pokemon.isFavorite = !pokemon.isFavorite;
+    this.removeFromViewedList(pokemon, index);
+  }
+
+  removeFromViewedList(pokemon: Pokemon, index: number): void {
+    if (this.onlyFavoritesShowing && !pokemon.isFavorite) {
+      this.pokemonList.splice(index, 1);
+    }
+  }
+
+  mouseEnter(pokemon: Pokemon): void {
     this.pokemonViewed = pokemon;
   }
 
   onlyFavorites(): void {
     this.onlyFavoritesShowing = true;
-    const favoritesList = this.pokemonFavoriteService.get();
+    const favoritesList = this.pokemonFavoriteService.getAll();
     const pokemonListOnlyFavorites = [];
     if (favoritesList && favoritesList.length) {
       favoritesList.forEach(id => pokemonListOnlyFavorites.push(this.pokemonGetByIdService.get(id)));
@@ -78,11 +89,6 @@ export class PokemonListComponent implements OnInit {
   }
 
   loadFavorites(list: Observable<any>[]): void {
-    forkJoin(list).subscribe(values => this.map(values));
-  }
-
-  reset(): void {
-    this.onlyFavoritesShowing = false;
-    this.pokemonGetAllService.reset().subscribe(res => this.map(res));
+    forkJoin(list).subscribe(values => this.assignValues(values));
   }
 }

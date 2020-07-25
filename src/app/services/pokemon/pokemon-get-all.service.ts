@@ -40,7 +40,7 @@ export class PokemonGetAllService {
       const listToGet = [];
       this.currentRequest = request;
       request.results.forEach(poke => listToGet.push(this.details(poke.url)));
-      return forkJoin<IPokemon>(listToGet);
+      return forkJoin<Observable<IPokemon>[]>(listToGet);
     }), map(pokemons => this._mapper.map(pokemons)));
   }
 

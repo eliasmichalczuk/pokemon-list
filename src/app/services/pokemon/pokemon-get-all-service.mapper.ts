@@ -9,14 +9,14 @@ export class PokemonGetAllServiceMapper {
   ) { }
 
   map(list: IPokemon[]): Pokemon[] {
-    const favoritesList = this.pokemonFavoriteService.get();
+    const favoritesList = this.pokemonFavoriteService.getAll();
     const mapped = [];
     list.forEach(toMap => mapped.push(this.fromWithList(toMap, favoritesList)));
     return mapped;
   }
 
   from(i: IPokemon): Pokemon {
-    const favoritesList = this.pokemonFavoriteService.get();
+    const favoritesList = this.pokemonFavoriteService.getAll();
     return new Pokemon(
       i.id,
       i.name,

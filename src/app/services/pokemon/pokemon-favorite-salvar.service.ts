@@ -8,33 +8,39 @@ export class PokemonFavoriteSalvarService {
   constructor(
   ) { }
 
-  set(id: number): void {
+  include(id: number): void {
+    const list = this.getFromStorage();
+    list.push(id);
+    localStorage.setItem(this._key,  JSON.stringify(list));
+  }
+
+  getAll(): number[] {
     if (localStorage.hasOwnProperty(this._key)) {
-      const pokemon = JSON.parse(localStorage.getItem(this._key));
-      pokemon.push({id});
-      localStorage.setItem(this._key,  JSON.stringify(pokemon));
+      return this.getFromStorage();
     } else {
-      localStorage.setItem(this._key,  JSON.stringify([{id}]));
+      this.setStorage();
+      return [];
     }
   }
 
   remove(id: number): void {
-    if (localStorage.hasOwnProperty(this._key)) {
-      const list = JSON.parse(localStorage.getItem(this._key)) as [{id: number}];
-      const index = list.findIndex(poke => poke.id === id);
-      if (index > -1) {
-        list.splice(index, 1);
-      }
+    const list = this.getFromStorage();
+    const index = list.findIndex(poke => poke === id);
+    if (this.isOnTheList(index)) {
+      list.splice(index, 1);
       localStorage.setItem(this._key,  JSON.stringify(list));
     }
   }
 
-  get(): number[] {
-    if (localStorage.hasOwnProperty(this._key)) {
-      const pokemon = JSON.parse(localStorage.getItem(this._key)) as [{id: number}];
-      const idList = [];
-      pokemon.forEach(poke => idList.push(poke.id));
-      return idList;
-    }
+  private isOnTheList(index: number): boolean {
+    return index > -1;
+  }
+
+  private setStorage(): void {
+    localStorage.setItem(this._key,  JSON.stringify([]));
+  }
+
+  private getFromStorage(): number[] {
+    return JSON.parse(localStorage.getItem(this._key));
   }
 }
