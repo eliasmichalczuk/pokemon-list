@@ -1,8 +1,10 @@
-import { PokemonFavoriteSalvarService } from './../../services/pokemon/pokemon-favorite-salvar.service';
-import { Observable } from 'rxjs';
-import { Pokemon } from './../../entities/pokemon/pokemon';
-import { PokemonGetAllService } from './../../services/pokemon/pokemon-get-all.service';
+import { Observable, forkJoin } from 'rxjs';
+import { PokemonGetByIdService } from './../../services/pokemon/pokemon-get-by-id.service';
 import { Component, OnInit } from '@angular/core';
+
+import { PokemonFavoriteSalvarService } from './../../services/pokemon/pokemon-favorite-salvar.service';
+import { PokemonGetAllService } from './../../services/pokemon/pokemon-get-all.service';
+import { IPokemon } from 'src/app/entities/pokemon/pokemon.interface';
 
 @Component({
   selector: 'app-pokemon-list',
@@ -11,10 +13,22 @@ import { Component, OnInit } from '@angular/core';
 })
 export class PokemonListComponent implements OnInit {
 
-  pokemonList: any[];
+  pokemonList: IPokemon[];
+  pokemonViewed: IPokemon = null;
+  onlyFavoritesShowing: boolean;
+
+  get showPrevious(): boolean {
+    return !this.pokemonGetAllService.hasPrevious || this.onlyFavoritesShowing;
+  }
+
+  get showNext(): boolean {
+    return !this.pokemonGetAllService.hasNext || this.onlyFavoritesShowing;
+  }
+
   constructor(
-    private pokemonGetAllService: PokemonGetAllService,
-    private pokemonFavoriteService: PokemonFavoriteSalvarService
+    public pokemonGetAllService: PokemonGetAllService,
+    private pokemonFavoriteService: PokemonFavoriteSalvarService,
+    private pokemonGetByIdService: PokemonGetByIdService
   ) { }
 
   ngOnInit(): void {
@@ -23,9 +37,13 @@ export class PokemonListComponent implements OnInit {
 
   loadPokemon(): void {
     this.pokemonGetAllService.get().subscribe(res => {
-      this.pokemonList = res;
-      this.setFavorites(this.pokemonList);
+      this.map(res);
     });
+  }
+
+  map(pokemon: any[]): void {
+    this.pokemonList = pokemon;
+    this.setFavorites(this.pokemonList);
   }
 
   favorite(pokemon: any): void {
@@ -56,5 +74,36 @@ export class PokemonListComponent implements OnInit {
 
   isOnTheList(list: number[], id: number): boolean {
     return list.indexOf(id) > -1;
+  }
+
+  next(): void {
+    this.pokemonGetAllService.next().subscribe(res => this.map(res));
+  }
+
+  previous(): void {
+    this.pokemonGetAllService.previous().subscribe(res => this.map(res));
+  }
+
+  mouseEnter(pokemon: any): void {
+    this.pokemonViewed = pokemon;
+  }
+
+  onlyFavorites(): void {
+    this.onlyFavoritesShowing = true;
+    const favoritesList = this.pokemonFavoriteService.get();
+    const pokemonListOnlyFavorites = [];
+    if (favoritesList && favoritesList.length) {
+      favoritesList.forEach(id => pokemonListOnlyFavorites.push(this.pokemonGetByIdService.get(id)));
+    }
+    this.loadFavorites(pokemonListOnlyFavorites);
+  }
+
+  loadFavorites(list: Observable<any>[]): void {
+    forkJoin(list).subscribe(values => this.map(values));
+  }
+
+  reset(): void {
+    this.onlyFavoritesShowing = false;
+    this.pokemonGetAllService.reset().subscribe(res => this.map(res));
   }
 }

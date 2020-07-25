@@ -16,3 +16,13 @@
 .scrolling-wrapper {
   -webkit-overflow-scrolling: touch;
 }
+
+.cursor {
+  cursor: pointer;
+}
+
+.display-middle {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+}

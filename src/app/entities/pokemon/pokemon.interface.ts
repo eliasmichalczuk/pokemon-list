@@ -7,4 +7,7 @@ export interface IPokemon {
   order: number;
   weight: number;
   url: string;
+  stats: any[];
+  sprites: any;
+  moves: any[];
 }

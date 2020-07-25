@@ -1,3 +1,5 @@
+import { PokemonGetByIdService } from './../services/pokemon/pokemon-get-by-id.service';
+import { SharedModule } from './../shared/shared/shared.module';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PokemonListComponent } from './pokemon-list/pokemon-list.component';
@@ -11,14 +13,16 @@ import { PokemonFavoriteSalvarService } from '../services/pokemon/pokemon-favori
   declarations: [PokemonListComponent],
   imports: [
     CommonModule,
-    PokemonListRoutingModule
+    PokemonListRoutingModule,
+    SharedModule
   ],
   exports: [
     PokemonListComponent
   ],
   providers: [
     PokemonGetAllService,
-    PokemonFavoriteSalvarService
+    PokemonFavoriteSalvarService,
+    PokemonGetByIdService
   ]
 })
 export class PokemonListModule { }
