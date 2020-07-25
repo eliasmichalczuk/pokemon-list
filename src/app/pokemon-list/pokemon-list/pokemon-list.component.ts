@@ -5,6 +5,7 @@ import { Component, OnInit } from '@angular/core';
 import { PokemonFavoriteSalvarService } from './../../services/pokemon/pokemon-favorite-salvar.service';
 import { PokemonGetAllService } from './../../services/pokemon/pokemon-get-all.service';
 import { IPokemon } from 'src/app/entities/pokemon/pokemon.interface';
+import { Pokemon } from 'src/app/entities/pokemon/pokemon';
 
 @Component({
   selector: 'app-pokemon-list',
@@ -13,8 +14,8 @@ import { IPokemon } from 'src/app/entities/pokemon/pokemon.interface';
 })
 export class PokemonListComponent implements OnInit {
 
-  pokemonList: IPokemon[];
-  pokemonViewed: IPokemon = null;
+  pokemonList: Pokemon[];
+  pokemonViewed: Pokemon = null;
   onlyFavoritesShowing: boolean;
 
   get showPrevious(): boolean {
@@ -43,7 +44,6 @@ export class PokemonListComponent implements OnInit {
 
   map(pokemon: any[]): void {
     this.pokemonList = pokemon;
-    this.setFavorites(this.pokemonList);
   }
 
   favorite(pokemon: any): void {
@@ -53,27 +53,6 @@ export class PokemonListComponent implements OnInit {
       this.pokemonFavoriteService.set(pokemon.id);
     }
     pokemon.isFavorite = !pokemon.isFavorite;
-  }
-
-  setFavorites(list: any[]): void {
-    const favoritesList = this.pokemonFavoriteService.get();
-    if (favoritesList && favoritesList.length) {
-      list.forEach(pokemon => {
-        if (this.isOnTheList(favoritesList, pokemon.id)) {
-          pokemon.isFavorite = true;
-        } else {
-          pokemon.isFavorite = false;
-        }
-      });
-    } else {
-      list.forEach(pokemon => {
-        pokemon.isFavorite = false;
-      });
-    }
-  }
-
-  isOnTheList(list: number[], id: number): boolean {
-    return list.indexOf(id) > -1;
   }
 
   next(): void {

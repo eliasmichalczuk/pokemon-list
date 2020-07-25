@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class PokemonFavoriteSalvarService {
@@ -33,9 +32,9 @@ export class PokemonFavoriteSalvarService {
   get(): number[] {
     if (localStorage.hasOwnProperty(this._key)) {
       const pokemon = JSON.parse(localStorage.getItem(this._key)) as [{id: number}];
-      const strList = [];
-      pokemon.forEach(poke => strList.push(poke.id));
-      return strList;
+      const idList = [];
+      pokemon.forEach(poke => idList.push(poke.id));
+      return idList;
     }
   }
 }

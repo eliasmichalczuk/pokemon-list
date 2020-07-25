@@ -1,5 +1,3 @@
-import { IPokemon } from './pokemon.interface';
-
 export class Pokemon {
   constructor(
     public id: number,
@@ -8,11 +6,11 @@ export class Pokemon {
     public height: number,
     public isDefault: boolean,
     public order: number,
-    public weight: number
+    public weight: number,
+    public stats: any[],
+    public sprites: any,
+    public moves: any[],
+    public isFavorite: boolean
   ) {
-  }
-
-  static from(i: IPokemon): Pokemon {
-    return new Pokemon(i.id, i.name, i.base_experience, i.height, i.is_default, i.order, i.weight);
   }
 }
