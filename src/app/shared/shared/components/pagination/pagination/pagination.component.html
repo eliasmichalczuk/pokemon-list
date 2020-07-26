@@ -1,0 +1,18 @@
+<nav aria-label="">
+  <ul class="pagination justify-content-center">
+    <li class="page-item" [ngClass]="{'disabled': showPrevious}">
+      <a class="page-link cursor" tabindex="-1" (click)="previous.emit()"
+        [ngClass]="{'disabled': showPrevious}">Anterior</a>
+    </li>
+    <li class="page-item">
+      <a class="page-link cursor" (click)="onlyFavorites.emit()">Apenas favoritos</a>
+    </li>
+    <li class="page-item">
+      <a class="page-link cursor" (click)="resetEvent.emit()">Reset</a>
+    </li>
+    <li class="page-item" [ngClass]="{'disabled': showNext}">
+      <a class="page-link cursor" (click)="next.emit()"
+        [ngClass]="{'disabled': showNext}">Próximo</a>
+    </li>
+  </ul>
+</nav>

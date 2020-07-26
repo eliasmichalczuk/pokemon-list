@@ -8,6 +8,7 @@
   overflow-y: hidden;
   white-space: nowrap;
 }
+
 .card1 {
   display: inline-block;
   text-align: center;
@@ -25,4 +26,9 @@
   align-items: center;
   display: flex;
   flex-direction: column;
+}
+
+.pokemon-details {
+  background-color: lightblue;
+  height: fit-content;
 }

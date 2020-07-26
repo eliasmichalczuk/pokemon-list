@@ -58,12 +58,13 @@ export class PokemonListComponent implements OnInit {
     this.pokemonGetAllService.reset().subscribe(res => this.assignValues(res));
   }
 
-  favorite(pokemon: Pokemon, index: number): void {
-    if (pokemon.isFavorite) {
-      this.pokemonFavoriteService.remove(pokemon.id);
-    } else {
-      this.pokemonFavoriteService.include(pokemon.id);
-    }
+  favorite(pokemon: Pokemon): void {
+    this.pokemonFavoriteService.include(pokemon.id);
+    pokemon.isFavorite = !pokemon.isFavorite;
+  }
+
+  unFavorite(pokemon: Pokemon, index: number): void {
+    this.pokemonFavoriteService.remove(pokemon.id);
     pokemon.isFavorite = !pokemon.isFavorite;
     this.removeFromViewedList(pokemon, index);
   }

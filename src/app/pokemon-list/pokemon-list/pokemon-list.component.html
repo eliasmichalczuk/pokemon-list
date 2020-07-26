@@ -1,23 +1,13 @@
 <div class="row">
   <div *ngIf="pokemonList as list" class="col-sm-12 offset-md-1 offset-lg-1 col-md-7 mt-5">
-    <nav aria-label="">
-      <ul class="pagination justify-content-center">
-        <li class="page-item" [ngClass]="{'disabled': showPrevious}">
-          <a class="page-link cursor" tabindex="-1" (click)="previous()"
-            [ngClass]="{'disabled': showPrevious}">Anterior</a>
-        </li>
-        <li class="page-item">
-          <a class="page-link cursor" (click)="onlyFavorites()">Apenas favoritos</a>
-        </li>
-        <li class="page-item">
-          <a class="page-link cursor" (click)="reset()">Reset</a>
-        </li>
-        <li class="page-item" [ngClass]="{'disabled': showNext}">
-          <a class="page-link cursor" (click)="next()"
-            [ngClass]="{'disabled': showNext}">Próximo</a>
-        </li>
-      </ul>
-    </nav>
+    <app-pagination
+      [showNext]="showNext"
+      [showPrevious]="showPrevious"
+      (next)="next($event)"
+      (previous)="previous($event)"
+      (resetEvent)="reset($event)"
+      (onlyFavorites)="onlyFavorites($event)">
+    </app-pagination>
     <table class="table table-borderless table-hover text-center">
       <thead>
         <tr>
@@ -31,10 +21,10 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let pokemon of list; let i = index" style="cursor: pointer;"
+        <tr *ngFor="let pokemon of list; let i = index" class="cursor"
           (mouseenter)="mouseEnter(pokemon)">
           <th scope="row">{{pokemon.id}}</th>
-          <td *ngIf="pokemon.isFavorite; else notFavorite" (click)="favorite(pokemon, i)">
+          <td *ngIf="pokemon.isFavorite; else notFavorite" (click)="unFavorite(pokemon, i)">
             <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-star-fill" fill="currentColor"
               xmlns="http://www.w3.org/2000/svg" style="color: #ff9a00">
               <path
@@ -42,7 +32,7 @@
             </svg>
           </td>
           <ng-template #notFavorite>
-            <td (click)="favorite(pokemon, i)">
+            <td (click)="favorite(pokemon)">
               <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-star" fill="currentColor"
                 xmlns="http://www.w3.org/2000/svg" style="color: #ff9a00">
                 <path fill-rule="evenodd"
@@ -58,26 +48,16 @@
         </tr>
       </tbody>
     </table>
-    <nav aria-label="">
-      <ul class="pagination justify-content-center">
-        <li class="page-item" [ngClass]="{'disabled': showPrevious}">
-          <a class="page-link cursor" tabindex="-1" (click)="previous()"
-            [ngClass]="{'disabled': showPrevious}">Anterior</a>
-        </li>
-        <li class="page-item">
-          <a class="page-link cursor" (click)="onlyFavorites()">Apenas favoritos</a>
-        </li>
-        <li class="page-item">
-          <a class="page-link cursor" (click)="reset()">Reset</a>
-        </li>
-        <li class="page-item" [ngClass]="{'disabled': showNext}">
-          <a class="page-link cursor" (click)="next()"
-            [ngClass]="{'disabled': showNext}">Próximo</a>
-        </li>
-      </ul>
-    </nav>
+    <app-pagination
+      [showNext]="showNext"
+      [showPrevious]="showPrevious"
+      (next)="next($event)"
+      (previous)="previous($event)"
+      (resetEvent)="reset($event)"
+      (onlyFavorites)="onlyFavorites($event)">
+    </app-pagination>
   </div>
-  <div *ngIf="pokemonViewed" class="col-sm-12 col-md-3 mt-5 display-middle" style="background-color: lightblue; height: fit-content;">
+  <div *ngIf="pokemonViewed" class="col-sm-12 col-md-3 mt-5 display-middle pokemon-details">
     <img [src]="pokemonViewed.sprites.front_default" alt="">
     <div class="font-weight-bold">{{pokemonViewed.name | uppercase}}</div>
     <table class="table table-borderless table-hover mt-1">
